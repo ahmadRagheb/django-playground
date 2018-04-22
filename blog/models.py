@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.encoding import smart_text
 # Create your models here.
 
 PUBLISH_CHOICES = [
@@ -16,3 +17,11 @@ class PostModel(models.Model):
 	class meta:
 		verbose_name = 'Post'
 		verbose_name_plural = 'Posts'			
+
+	#smart_text method for unicode whatever language we are using no errors
+	
+	def __unicode__(self): #python 2
+		return smart_text(self.title)
+
+	def __str__(self): #python 3
+		return smart_text(self.title)
