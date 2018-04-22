@@ -4,8 +4,9 @@ from django.db import models
 class PostModel(models.Model):
 	id 			= models.BigAutoField(primary_key=True)
 	active 		= models.BooleanField(default=True)
-	title		= models.CharField(max_length=240)
+	title		= models.CharField(max_length=240, verbose_name='Post title')
 	content		= models.TextField(null=True,blank=True)
 
-
-	pass
+	class meta:
+		verbose_name = 'Post'
+		verbose_name_plural = 'Posts'			
