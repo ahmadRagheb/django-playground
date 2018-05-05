@@ -34,6 +34,11 @@ class PostModel(models.Model):
 	publish_date	= models.DateField(auto_now=False, auto_now_add=False, default = timezone.now)
 	author_email 	= models.EmailField(max_length=240, validators=[validate_author_email,validate_justin],
 										null=True, blank=True)
+	#when it's updated
+	updated 		= models.DateTimeField(auto_now=True)
+	#when it's inserted to db
+	timestamp  		= models.DateTimeField(auto_now_add=True)
+	
 	#overriding save method 
 	def save(self,*args,**kwargs):
 		if not self.slug and self.title:
