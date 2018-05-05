@@ -18,7 +18,15 @@ PUBLISH_CHOICES = [
 class PostModel(models.Model):
 	id 				= models.BigAutoField(primary_key=True)
 	active 			= models.BooleanField(default=True)
-	title			= models.CharField(max_length=240, verbose_name='Post title', unique=True)
+	title			= models.CharField(
+							max_length=240,
+							verbose_name='Post title',
+							unique=True,
+							error_message={
+								"unique":"This title is not unique , please try again",
+								"blank":"This field is not full, please try again"		
+							},
+							help_text='Must be a unique title.')
 	slug 			= models.SlugField(null=True, blank=True)
 	content			= models.TextField(null=True,blank=True)
 	publish 		= models.CharField(max_length=120, choices=PUBLISH_CHOICES, default='draft')
@@ -48,7 +56,6 @@ class PostModel(models.Model):
 
 #signals Before save 
 def blog_post_model_pre_save_receiver(sender, instance, *args, **kwargs):
-	print("before save")
 	if not instance.slug and instance.title:
 		instance.slug = slugify(instance.title)
 
@@ -57,8 +64,6 @@ pre_save.connect(blog_post_model_pre_save_receiver, sender=PostModel)
 
 #signals After save 
 def blog_post_model_post_save_receiver(sender, instance, created, *args, **kwargs):
-	print("After save")
-	print(created)
 	if created:
 		if not instance.slug and instance.title:
 			instance.slug = slugify(instance.title)
@@ -68,7 +73,6 @@ post_save.connect(blog_post_model_post_save_receiver, sender=PostModel)
 
 
 #signals Before delete 
-
 def blog_post_model_post_delete_receiver(sender, instance, *args, **kwargs):
 	print("After delete")
 
