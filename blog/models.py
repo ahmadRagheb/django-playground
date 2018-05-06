@@ -1,7 +1,9 @@
+from datetime import timedelta, datetime, date
 from django.db import models
 from django.utils.encoding import smart_text
 from django.utils import timezone
 from django.utils.text import slugify
+from django.utils.timesince import timesince
 
 from django.db.models.signals import post_save,pre_save,post_delete
 # Create your models here.
@@ -22,7 +24,7 @@ class PostModel(models.Model):
 							max_length=240,
 							verbose_name='Post title',
 							unique=True,
-							error_message={
+							error_messages={
 								"unique":"This title is not unique , please try again",
 								"blank":"This field is not full, please try again"		
 							},
@@ -58,6 +60,29 @@ class PostModel(models.Model):
 	def __str__(self): #python 3
 		return smart_text(self.title)
 
+	# Instance Methode 
+	@property 
+	def age(self):
+		if self.publish == 'publish':
+			now = datetime.now()
+			publish_time = datetime.combine(
+								self.publish_date,
+								datetime.min.time()
+						)
+			try:
+				difference = now - publish_time
+			except:
+				return "Unknown"
+			if difference <= timedelta(minutes=1):
+				return "just now"
+			else:
+				time=timesince(publish_time).split(', ')[0]
+				print time
+
+
+				return time
+
+		return "Not published"
 
 #signals Before save 
 def blog_post_model_pre_save_receiver(sender, instance, *args, **kwargs):

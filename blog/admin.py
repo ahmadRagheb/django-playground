@@ -15,17 +15,18 @@ class PostModelAdmin(admin.ModelAdmin):
 		'publish_date',
 		'active',
 		'updated',
-		'timestamp'
+		'timestamp',
+		'get_age'
 	]
 
 	"""add updated and timestamp to readonly fields 
 		so we can see them in admin without problem """
 
-	readonly_fields = ['updated','timestamp','new_content']
+	readonly_fields = ['updated','timestamp','get_age']
 
 	#create new field not in database to be showed in admin as read only field
-	def new_content(self, obj, *args, **kwargs):
-		return str(obj.title)
+	def get_age(self, obj, *args, **kwargs):
+		return obj.age
 
 	class Meta:
 		model = PostModel
