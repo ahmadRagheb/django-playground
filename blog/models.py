@@ -17,12 +17,24 @@ PUBLISH_CHOICES = [
 		('private','Private'),		
 	]
 
+""" Custom QuerySet Methods """
+class PostModelQuerySet(models.query.QuerySet):
+	def active(self):
+		return self.filter(active=True)
+
+	def post_title_items(self,value):
+		return self.filter(title__icontains=value)
+
 
 """ Model Mangers """
 class PostModelManager(models.Manager):
 	"""docstring for PostModelManager"""
+	def get_queryset(self):
+		return PostModelQuerySet(self.model, using=self._db)
+
 	def all(self, *args, **kwargs):
-		qs = super(PostModelManager, self).all(*args, **kwargs).filter(active=True)
+		# qs = super(PostModelManager, self).all(*args, **kwargs).filter(active=True)
+		qs = self.get_queryset().active()
 		return qs
 		
 
