@@ -17,6 +17,15 @@ PUBLISH_CHOICES = [
 		('private','Private'),		
 	]
 
+
+""" Model Mangers """
+class PostModelManager(models.Manager):
+	"""docstring for PostModelManager"""
+	def all(self, *args, **kwargs):
+		qs = super(PostModelManager, self).all(*args, **kwargs).filter(active=True)
+		return qs
+		
+
 class PostModel(models.Model):
 	id 				= models.BigAutoField(primary_key=True)
 	active 			= models.BooleanField(default=True)
@@ -40,7 +49,9 @@ class PostModel(models.Model):
 	updated 		= models.DateTimeField(auto_now=True)
 	#when it's inserted to db
 	timestamp  		= models.DateTimeField(auto_now_add=True)
-	
+	objects 		= PostModelManager()
+
+
 	#overriding save method 
 	def save(self,*args,**kwargs):
 		if not self.slug and self.title:
@@ -77,9 +88,6 @@ class PostModel(models.Model):
 				return "just now"
 			else:
 				time=timesince(publish_time).split(', ')[0]
-				print time
-
-
 				return time
 
 		return "Not published"
